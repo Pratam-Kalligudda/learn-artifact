@@ -1,0 +1,534 @@
+<title>From the Line to You</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #eef1ef;
+    --surface: #ffffff;
+    --surface-2: #e3e9e6;
+    --ink: #121a1c;
+    --ink-soft: #47565a;
+    --ink-faint: #7c8b8c;
+    --border: #cdd7d2;
+    --border-soft: #dde4e0;
+    --accent: #1c7a52;
+    --accent-strong: #12603e;
+    --accent-soft: #dcece3;
+    --accent-ink: #0e4a30;
+    --amber: #a8631a;
+    --amber-soft: #f3e3cd;
+    --red: #a8402b;
+    --panel-bg: #10181a;
+    --panel-text: #d7e6df;
+    --panel-border: #24363a;
+    --panel-accent: #6fd3a3;
+    --shadow-card: 0 1px 2px rgba(18,26,28,0.04), 0 6px 20px -8px rgba(18,26,28,0.10);
+
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", "SF Mono", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1517;
+      --surface: #131c1e;
+      --surface-2: #1a2528;
+      --ink: #eaf1ee;
+      --ink-soft: #a8bab5;
+      --ink-faint: #6d8481;
+      --border: #26383a;
+      --border-soft: #1e2d2f;
+      --accent: #5fcf9c;
+      --accent-strong: #7fe0b3;
+      --accent-soft: #1b3128;
+      --accent-ink: #8fe8ba;
+      --amber: #e0a75c;
+      --amber-soft: #362a17;
+      --red: #e08a76;
+      --panel-bg: #0a1112;
+      --panel-text: #d7e6df;
+      --panel-border: #24363a;
+      --panel-accent: #7fe0b3;
+      --shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1517;
+    --surface: #131c1e;
+    --surface-2: #1a2528;
+    --ink: #eaf1ee;
+    --ink-soft: #a8bab5;
+    --ink-faint: #6d8481;
+    --border: #26383a;
+    --border-soft: #1e2d2f;
+    --accent: #5fcf9c;
+    --accent-strong: #7fe0b3;
+    --accent-soft: #1b3128;
+    --accent-ink: #8fe8ba;
+    --amber: #e0a75c;
+    --amber-soft: #362a17;
+    --red: #e08a76;
+    --panel-bg: #0a1112;
+    --panel-text: #d7e6df;
+    --panel-border: #24363a;
+    --panel-accent: #7fe0b3;
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -10px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; color: var(--ink); text-wrap: balance; }
+  p { margin: 0 0 1em; color: var(--ink-soft); }
+  a { color: var(--accent-ink); }
+  code, .mono { font-family: var(--font-mono); }
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
+  a:focus-visible, button:focus-visible, .navlink:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .page { max-width: 1180px; margin: 0 auto; padding: 40px 24px 96px; }
+
+  /* ---- Header ---- */
+  .header { padding: 8px 0 36px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); flex: none; }
+  h1.title { font-size: clamp(32px, 4.4vw, 46px); line-height: 1.08; letter-spacing: -0.01em; margin: 0 0 14px; max-width: 16ch; }
+  .dek { font-size: 17px; line-height: 1.6; color: var(--ink-soft); max-width: 62ch; margin: 0 0 28px; }
+  .dek strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- Flow strip ---- */
+  .flowstrip { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding-bottom: 4px; }
+  .flownode {
+    flex: none; display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    padding: 12px 16px; min-width: 128px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--surface); box-shadow: var(--shadow-card);
+  }
+  .flownode .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); }
+  .flownode .v { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--ink); }
+  .flownode.next { border-style: dashed; background: transparent; box-shadow: none; opacity: 0.7; }
+  .flowarrow { flex: none; width: 34px; display: flex; align-items: center; justify-content: center; color: var(--ink-faint); }
+
+  /* ---- Layout grid ---- */
+  .layout { display: grid; grid-template-columns: 200px minmax(0, 700px) 250px; gap: 48px; align-items: start; }
+  @media (max-width: 1020px) { .layout { grid-template-columns: 1fr; } .rail-left { display: none; } .rail-right { order: 3; } }
+
+  /* ---- Left nav ---- */
+  .rail-left { position: sticky; top: 24px; }
+  .rail-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+  .navlist { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--border-soft); }
+  .navlink {
+    display: block; padding: 6px 0 6px 14px; margin-left: -2px; border-left: 2px solid transparent;
+    font-size: 13.5px; color: var(--ink-faint); text-decoration: none;
+  }
+  .navlink.active { color: var(--accent-ink); border-left-color: var(--accent); font-weight: 600; }
+
+  /* ---- Content ---- */
+  .content { min-width: 0; }
+  section.block { margin-bottom: 56px; scroll-margin-top: 24px; }
+  .block h2 {
+    font-size: 24px; margin: 0 0 4px; display: flex; align-items: baseline; gap: 10px;
+  }
+  .block h2 .num { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 600; }
+  .block .lede { font-size: 15px; color: var(--ink-faint); margin: 0 0 22px; max-width: 60ch; }
+  .block p { max-width: 66ch; }
+  .block p code, li code { background: var(--surface-2); border: 1px solid var(--border-soft); border-radius: 4px; padding: 1px 5px; font-size: 0.87em; color: var(--ink); }
+
+  .callout {
+    border: 1px solid var(--border); border-left: 3px solid var(--accent); background: var(--surface);
+    border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 18px 0; box-shadow: var(--shadow-card);
+    max-width: 66ch;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; display: block; }
+
+  .teaser {
+    border: 1px dashed var(--border); border-radius: 10px; padding: 18px 20px; margin-top: 20px; max-width: 66ch;
+    background: linear-gradient(180deg, var(--surface-2), transparent);
+  }
+  .teaser .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; display: block; }
+  .teaser p { margin: 0; font-size: 14.5px; }
+
+  /* ---- Diagram frames ---- */
+  .diagram { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow-card); padding: 18px 20px 14px; margin: 16px 0 24px; overflow-x: auto; }
+  .diagram svg { display: block; }
+  .diagram .cap { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); margin-top: 8px; }
+  svg text { font-family: var(--font-body); fill: var(--ink); }
+  svg .lbl { font-family: var(--font-mono); fill: var(--ink-faint); }
+  svg .arrow { stroke: var(--ink-faint); fill: none; }
+  svg .arrowhead { fill: var(--ink-faint); }
+  svg .node-fill { fill: var(--surface); stroke: var(--border); }
+  svg .node-fill.accent { fill: var(--accent-soft); stroke: var(--accent); }
+  svg .node-fill.dashed { fill: transparent; stroke: var(--border); stroke-dasharray: 4 4; }
+
+  /* ---- Table ---- */
+  .tablewrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-card); margin: 8px 0 20px; }
+  table.proto { border-collapse: collapse; width: 100%; min-width: 640px; background: var(--surface); }
+  table.proto th, table.proto td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border-soft); vertical-align: top; font-size: 13.5px; }
+  table.proto thead th {
+    font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-faint); background: var(--surface-2); border-bottom: 1px solid var(--border);
+  }
+  table.proto tbody tr:last-child td { border-bottom: none; }
+  table.proto td.proto-name { font-family: var(--font-display); font-weight: 700; color: var(--ink); white-space: nowrap; }
+  .badge {
+    display: inline-block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.03em;
+    padding: 2px 7px; border-radius: 999px; background: var(--surface-2); color: var(--ink-soft); border: 1px solid var(--border-soft);
+  }
+  table.proto td.take { color: var(--ink-soft); max-width: 30ch; }
+
+  /* ---- I/O map ---- */
+  .iomap { display: grid; gap: 10px; }
+  .iorow { display: grid; grid-template-columns: 100px 1fr 100px 1fr; gap: 12px; align-items: center; }
+  .iorow .tag { font-family: var(--font-mono); font-size: 11px; text-align: center; padding: 6px 4px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); color: var(--ink-soft); }
+  .iorow .desc { font-size: 13px; color: var(--ink-soft); }
+  .iorow .addr { font-family: var(--font-mono); font-size: 12px; text-align: center; padding: 6px 4px; border-radius: 6px; background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+
+  /* ---- Right rail ---- */
+  .rail-right { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 18px; }
+  .glosscard, .portscard { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow-card); overflow: hidden; }
+  .glosscard h3, .portscard h3 {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600; margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--border-soft);
+  }
+  dl.gloss { margin: 0; padding: 10px 16px 14px; }
+  dl.gloss dt { font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; color: var(--ink); margin-top: 10px; }
+  dl.gloss dt:first-child { margin-top: 0; }
+  dl.gloss dd { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-faint); line-height: 1.5; }
+
+  .portscard { background: var(--panel-bg); border-color: var(--panel-border); }
+  .portscard h3 { color: var(--panel-accent); border-bottom-color: var(--panel-border); }
+  .portlist { list-style: none; margin: 0; padding: 10px 16px 14px; font-family: var(--font-mono); font-size: 12px; color: var(--panel-text); }
+  .portlist li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--panel-border); font-variant-numeric: tabular-nums; }
+  .portlist li:last-child { border-bottom: none; }
+  .portlist .n { color: var(--panel-text); opacity: 0.8; }
+  .portlist .p { color: var(--panel-accent); font-weight: 600; text-align: right; }
+
+  footer.foot { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--ink-faint); }
+</style>
+
+<div class="page">
+
+  <header class="header">
+    <div class="eyebrow">OT Fundamentals · Part 1 of 2</div>
+    <h1 class="title">From the Line to You</h1>
+    <p class="dek">
+      How a motor turning on Line&nbsp;1 becomes a row you can query. This is the plant-floor half of that
+      trip — <strong>PLC, protocols, and the edge gateway</strong> — stopping at the moment your data leaves the
+      building. What happens after (ingestion, anomaly detection, TimescaleDB, the LLM layer) is Part 2.
+    </p>
+
+    <div class="flowstrip" role="img" aria-label="Data flow: Motor and Sensor, to PLC, to Protocol, to Edge Gateway, to your pipeline (next topic)">
+      <div class="flownode"><span class="k">Field</span><span class="v">Motor / Sensor</span></div>
+      <div class="flowarrow">
+        <svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="22" y2="8" class="arrow"/><polygon points="22,3 30,8 22,13" class="arrowhead"/></svg>
+      </div>
+      <div class="flownode"><span class="k">Controller</span><span class="v">PLC</span></div>
+      <div class="flowarrow">
+        <svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="22" y2="8" class="arrow"/><polygon points="22,3 30,8 22,13" class="arrowhead"/></svg>
+      </div>
+      <div class="flownode"><span class="k">Wire format</span><span class="v">Protocol</span></div>
+      <div class="flowarrow">
+        <svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="22" y2="8" class="arrow"/><polygon points="22,3 30,8 22,13" class="arrowhead"/></svg>
+      </div>
+      <div class="flownode"><span class="k">Aggregator</span><span class="v">Edge Gateway</span></div>
+      <div class="flowarrow">
+        <svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="22" y2="8" class="arrow"/><polygon points="22,3 30,8 22,13" class="arrowhead"/></svg>
+      </div>
+      <div class="flownode next"><span class="k">Part 2</span><span class="v">Your pipeline</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <nav class="rail-left" aria-label="Section navigation">
+      <div class="rail-title">On this page</div>
+      <ul class="navlist" id="navlist">
+        <li><a class="navlink" href="#plc" data-target="plc">01 · The PLC</a></li>
+        <li><a class="navlink" href="#field" data-target="field">02 · Sensors &amp; motors</a></li>
+        <li><a class="navlink" href="#protocols" data-target="protocols">03 · Protocol landscape</a></li>
+        <li><a class="navlink" href="#gateway" data-target="gateway">04 · Edge gateway</a></li>
+      </ul>
+    </nav>
+
+    <main class="content">
+
+      <section class="block" id="plc">
+        <h2><span class="num">01</span> The PLC</h2>
+        <p class="lede">Not a computer running a program — a runtime with one job, executed on a fixed budget, forever.</p>
+
+        <p>
+          A Programmable Logic Controller doesn't run code the way a server does. There's no event loop waiting
+          on something to happen. Instead it runs a <strong>scan cycle</strong>: read every input, evaluate the
+          whole program once against that snapshot, write every output, do a bit of housekeeping (comms,
+          diagnostics), and start over — whether or not anything actually changed. A cycle typically takes
+          <code>1–50ms</code> depending on program size and PLC class, so from the outside it reads less like a
+          stream of change events and more like a steady heartbeat.
+        </p>
+
+        <div class="diagram">
+          <svg viewBox="0 0 620 190" width="100%" height="190" role="img" aria-label="PLC scan cycle: Read Inputs, Execute Logic, Write Outputs, Housekeeping, looping continuously">
+            <g>
+              <rect x="30" y="20" width="150" height="56" rx="8" class="node-fill accent"/>
+              <text x="105" y="44" text-anchor="middle" font-size="13" font-weight="600">Read Inputs</text>
+              <text x="105" y="61" text-anchor="middle" class="lbl" font-size="10">snapshot %I / registers</text>
+
+              <rect x="235" y="20" width="150" height="56" rx="8" class="node-fill accent"/>
+              <text x="310" y="44" text-anchor="middle" font-size="13" font-weight="600">Execute Logic</text>
+              <text x="310" y="61" text-anchor="middle" class="lbl" font-size="10">ladder rungs, top→bottom</text>
+
+              <rect x="440" y="20" width="150" height="56" rx="8" class="node-fill accent"/>
+              <text x="515" y="44" text-anchor="middle" font-size="13" font-weight="600">Write Outputs</text>
+              <text x="515" y="61" text-anchor="middle" class="lbl" font-size="10">push %Q / registers</text>
+
+              <line x1="180" y1="48" x2="230" y2="48" class="arrow"/><polygon points="230,43 238,48 230,53" class="arrowhead"/>
+              <line x1="385" y1="48" x2="435" y2="48" class="arrow"/><polygon points="435,43 443,48 435,53" class="arrowhead"/>
+
+              <rect x="235" y="120" width="150" height="50" rx="8" class="node-fill dashed"/>
+              <text x="310" y="141" text-anchor="middle" font-size="12" fill="var(--ink-soft)">Housekeeping</text>
+              <text x="310" y="157" text-anchor="middle" class="lbl" font-size="10">comms, diagnostics</text>
+
+              <path d="M 515 76 C 515 110, 515 145, 385 145" class="arrow"/><polygon points="390,140 383,145 390,150" class="arrowhead"/>
+              <path d="M 235 145 C 130 145, 105 110, 105 76" class="arrow"/><polygon points="100,80 105,72 110,80" class="arrowhead"/>
+            </g>
+            <text x="105" y="185" text-anchor="middle" class="lbl" font-size="10.5">cycle time ≈ 1–50ms, then repeat</text>
+          </svg>
+          <div class="cap">Fig. 1 — the scan cycle: the loop every PLC runs, regardless of brand.</div>
+        </div>
+
+        <p>
+          The logic itself is usually written as <strong>ladder logic</strong> — rungs that look like relay wiring
+          diagrams, read left to right — because it maps directly onto the electromechanical relay panels PLCs
+          replaced. Brand doesn't change the model: a Siemens S7-1200, an Allen-Bradley CompactLogix, and a
+          Mitsubishi FX all run the same read → execute → write loop underneath their own tooling.
+        </p>
+
+        <div class="callout">
+          <span class="label">IT translation</span>
+          <p>Closer to a fixed-tick game loop than a request handler — it doesn't wait for input, it polls the
+            world at a guaranteed rate and never skips a beat.</p>
+        </div>
+      </section>
+
+      <section class="block" id="field">
+        <h2><span class="num">02</span> Sensors &amp; motors, as the PLC sees them</h2>
+        <p class="lede">Zoomed out past the wiring — for this flow, they're just addresses the scan cycle reads and writes.</p>
+
+        <p>
+          The wiring, signal conditioning, and scaling are a separate topic. What matters here: by the time a
+          value reaches the program, a <strong>sensor</strong> is a discrete bit or a scaled number sitting at an
+          input address, and a <strong>motor</strong> is a bit or setpoint the program writes to an output address.
+          The PLC already did the hard part — debouncing a switch, linearizing a 4–20mA loop into engineering
+          units — so what you eventually see is a clean, named tag with a value and a timestamp, not raw voltage.
+        </p>
+
+        <div class="diagram">
+          <div class="iomap">
+            <div class="iorow">
+              <div class="tag">Proximity switch</div>
+              <div class="desc">discrete input — part present at the sensor</div>
+              <div class="addr">%I0.0</div>
+              <div class="desc">PLC memory: bit, on/off</div>
+            </div>
+            <div class="iorow">
+              <div class="tag">Temperature probe</div>
+              <div class="desc">analog input — scaled to engineering units</div>
+              <div class="addr">%IW4</div>
+              <div class="desc">PLC memory: register, e.g. 84.2 °C</div>
+            </div>
+            <div class="iorow">
+              <div class="tag">Conveyor motor</div>
+              <div class="desc">PLC writes start bit + speed setpoint</div>
+              <div class="addr">%QW2</div>
+              <div class="desc">→ VFD, which actually drives the motor</div>
+            </div>
+          </div>
+          <div class="cap">Fig. 2 — field devices resolve to plain addresses in PLC memory; the PLC never touches motor current directly, a Variable Frequency Drive (VFD) does that.</div>
+        </div>
+
+        <p>
+          One distinction worth keeping: the PLC doesn't power the motor — it tells a <strong>VFD</strong> what to
+          do (run, stop, target speed), and the drive handles the actual current. That's why a motor "reading" you
+          see later is almost always a commanded setpoint or a drive-reported speed, not a raw electrical
+          measurement.
+        </p>
+      </section>
+
+      <section class="block" id="protocols">
+        <h2><span class="num">03</span> Protocol landscape</h2>
+        <p class="lede">How the PLC's memory gets onto a wire, and who's allowed to ask for it.</p>
+
+        <p>
+          None of these are fixed to your site yet, so treat this as the field guide: five protocols you'll run
+          into, what pattern each one follows, and where it usually sits in a plant.
+        </p>
+
+        <div class="tablewrap">
+          <table class="proto">
+            <thead>
+              <tr><th>Protocol</th><th>Pattern</th><th>Transport</th><th>Where it lives</th><th>The one-liner</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="proto-name">Modbus</td>
+                <td><span class="badge">poll</span> master/slave</td>
+                <td class="mono">RS-485 (RTU) or TCP/502</td>
+                <td>Legacy PLCs, drives, meters</td>
+                <td class="take">Raw register reads, no names, no schema, no auth. Everywhere because it's trivial to implement.</td>
+              </tr>
+              <tr>
+                <td class="proto-name">OPC-UA</td>
+                <td><span class="badge">client/server</span> browsable</td>
+                <td class="mono">TCP/4840, TLS optional</td>
+                <td>PLC ↔ SCADA / edge gateway</td>
+                <td class="take">Closest thing OT has to a typed API — nodes carry names, types, and metadata, not just numbers.</td>
+              </tr>
+              <tr>
+                <td class="proto-name">MQTT</td>
+                <td><span class="badge">pub/sub</span> via broker</td>
+                <td class="mono">TCP/1883 (8883 TLS)</td>
+                <td>Edge gateway → cloud</td>
+                <td class="take">The pattern you already know from IT — usually the last hop before your ingestion pipeline.</td>
+              </tr>
+              <tr>
+                <td class="proto-name">PROFINET</td>
+                <td><span class="badge">cyclic RT</span> real-time Ethernet</td>
+                <td class="mono">Ethernet, EtherType 0x8892</td>
+                <td>Siemens-heavy machine level</td>
+                <td class="take">Built for millisecond determinism between PLC and drives — rarely leaves the machine.</td>
+              </tr>
+              <tr>
+                <td class="proto-name">EtherNet/IP</td>
+                <td><span class="badge">producer/consumer</span> CIP</td>
+                <td class="mono">TCP/UDP 44818, I/O UDP 2222</td>
+                <td>Rockwell / Allen-Bradley plants</td>
+                <td class="take">Same real-time goal as PROFINET, different vendor ecosystem (CIP over Ethernet).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <span class="label">Where the gateway fits</span>
+          <p>Your edge gateway's whole job is to speak whichever of these dialects the PLC speaks on the floor
+            side, and re-publish it as the one dialect your pipeline speaks on the other side — almost always
+            <strong>OPC-UA in, MQTT out</strong>.</p>
+        </div>
+      </section>
+
+      <section class="block" id="gateway">
+        <h2><span class="num">04</span> Edge gateway</h2>
+        <p class="lede">The translator between however many PLC dialects are on the floor, and the one your pipeline expects.</p>
+
+        <p>
+          <strong>Kepware (KEPServerEX)</strong> is an OPC server: it ships with drivers for the protocols above —
+          Modbus, PROFINET, EtherNet/IP, Siemens S7, dozens more — and re-exposes every one of them as a single,
+          consistent set of OPC-UA tags. Point it at ten PLCs from five vendors and it hands back one uniform
+          namespace, regardless of what each PLC actually speaks natively.
+        </p>
+        <p>
+          <strong>Node-RED</strong> typically sits right after it: a flow-based tool that subscribes to those
+          OPC-UA tags (or polls Modbus directly when there's no OPC server in the way), reshapes and filters the
+          values, and publishes them onward — usually over MQTT — to whatever's listening next.
+        </p>
+
+        <div class="diagram">
+          <svg viewBox="0 0 640 130" width="100%" height="130" role="img" aria-label="Resolved flow: multiple PLCs speaking different protocols, into Kepware which normalizes to OPC-UA, into Node-RED which republishes over MQTT, out to the ingestion pipeline">
+            <text x="20" y="24" class="lbl" font-size="10.5">PLCs (mixed protocols)</text>
+            <rect x="20" y="34" width="86" height="34" rx="6" class="node-fill"/><text x="63" y="55" text-anchor="middle" font-size="11">Modbus PLC</text>
+            <rect x="20" y="76" width="86" height="34" rx="6" class="node-fill"/><text x="63" y="97" text-anchor="middle" font-size="11">S7 PLC</text>
+
+            <line x1="106" y1="51" x2="150" y2="60" class="arrow"/>
+            <line x1="106" y1="93" x2="150" y2="70" class="arrow"/>
+            <polygon points="148,55 158,60 148,65" class="arrowhead"/>
+
+            <rect x="160" y="34" width="120" height="66" rx="8" class="node-fill accent"/>
+            <text x="220" y="62" text-anchor="middle" font-size="12.5" font-weight="600">Kepware</text>
+            <text x="220" y="79" text-anchor="middle" class="lbl" font-size="10">→ OPC-UA</text>
+
+            <line x1="280" y1="67" x2="320" y2="67" class="arrow"/><polygon points="320,62 328,67 320,72" class="arrowhead"/>
+
+            <rect x="330" y="34" width="120" height="66" rx="8" class="node-fill accent"/>
+            <text x="390" y="62" text-anchor="middle" font-size="12.5" font-weight="600">Node-RED</text>
+            <text x="390" y="79" text-anchor="middle" class="lbl" font-size="10">→ MQTT</text>
+
+            <line x1="450" y1="67" x2="490" y2="67" class="arrow"/><polygon points="490,62 498,67 490,72" class="arrowhead"/>
+
+            <rect x="500" y="42" width="120" height="50" rx="8" class="node-fill dashed"/>
+            <text x="560" y="63" text-anchor="middle" font-size="11.5" fill="var(--ink-soft)">Ingestion</text>
+            <text x="560" y="79" text-anchor="middle" class="lbl" font-size="10">Part 2 →</text>
+          </svg>
+          <div class="cap">Fig. 3 — the resolved chain: mixed PLCs, normalized once, republished once.</div>
+        </div>
+
+        <div class="teaser">
+          <span class="label">Next: Part 2</span>
+          <p>What happens after the MQTT hand-off — ingestion, validation, anomaly detection against a
+            per-sensor baseline, storage in TimescaleDB, and how an LLM ends up answering questions about a
+            reading — is its own topic. This one stops at the gateway.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <aside class="rail-right">
+      <div class="glosscard">
+        <h3>Field glossary</h3>
+        <dl class="gloss">
+          <dt>Tag</dt><dd>a named, typed data point exposed by the PLC or gateway — what "%IW4" becomes once it has a human-readable name.</dd>
+          <dt>Register</dt><dd>a fixed-size memory slot the PLC exposes for a value; Modbus addresses these directly, e.g. holding register 40001.</dd>
+          <dt>Polling vs. subscription</dt><dd>Modbus clients ask "what's the value now?" repeatedly; OPC-UA/MQTT clients get told when it changes.</dd>
+          <dt>Fieldbus</dt><dd>any of the wire-level protocols connecting PLCs to drives/sensors at the machine level (Modbus, PROFINET, EtherNet/IP).</dd>
+          <dt>Historian</dt><dd>a time-series store built for plant tags — the OT-side ancestor of what TimescaleDB does downstream.</dd>
+          <dt>IEC 61131 addressing</dt><dd>the <code>%I0.0</code> / <code>%Q0.0</code> notation: input/output, byte, bit.</dd>
+        </dl>
+      </div>
+      <div class="portscard">
+        <h3>Ports at a glance</h3>
+        <ul class="portlist">
+          <li><span class="n">Modbus TCP</span><span class="p">502</span></li>
+          <li><span class="n">OPC-UA</span><span class="p">4840</span></li>
+          <li><span class="n">MQTT</span><span class="p">1883 / 8883·tls</span></li>
+          <li><span class="n">EtherNet/IP</span><span class="p">44818 · UDP 2222</span></li>
+          <li><span class="n">PROFINET</span><span class="p">EtherType 0x8892</span></li>
+        </ul>
+      </div>
+    </aside>
+
+  </div>
+
+  <footer class="foot">Learn-Artifacts · OT Fundamentals, Part 1 of 2 — field layer through the edge gateway.</footer>
+</div>
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.navlink'));
+    var sections = links.map(function (l) { return document.getElementById(l.dataset.target); }).filter(Boolean);
+    if (!('IntersectionObserver' in window) || !sections.length) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = links.find(function (l) { return l.dataset.target === entry.target.id; });
+        if (!link) return;
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -70% 0px', threshold: 0 });
+    sections.forEach(function (s) { io.observe(s); });
+  })();
+</script>
